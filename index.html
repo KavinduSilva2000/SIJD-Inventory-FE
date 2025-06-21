@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   SIJD Inventory Management Dashboard
+  </title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js">
+  </script>
+  <link href="styles.css" rel="stylesheet"/>
+  <script src="script.js">
+  </script>
+ </head>
+ <body>
+  <!-- Login Container -->
+  <div class="login-container" id="loginContainer">
+   <form class="login-form" id="loginForm">
+    <h2>
+     <i class="fas fa-boxes">
+     </i>
+     SIJD Inventory
+    </h2>
+    <div class="form-group">
+     <label for="email">
+      Email
+     </label>
+     <input autocomplete="email" id="email" required="" type="email" value="admin@sijd.com"/>
+    </div>
+    <div class="form-group">
+     <label for="password">
+      Password
+     </label>
+     <input autocomplete="current-password" id="password" required="" type="password" value="admin@123"/>
+    </div>
+    <button class="btn btn-full" type="submit">
+     <i class="fas fa-sign-in-alt">
+     </i>
+     Login
+    </button>
+    <div class="loading" id="loginLoading">
+     <div class="spinner">
+     </div>
+     <p>
+      Logging in...
+     </p>
+    </div>
+   </form>
+  </div>
+  <!-- Dashboard Container -->
+  <div class="dashboard" id="dashboardContainer">
+   <div class="container">
+    <!-- Header -->
+    <div class="header fade-in">
+     <h1>
+      <i class="fas fa-tachometer-alt">
+      </i>
+      Inventory Dashboard
+     </h1>
+     <div class="user-info">
+      <span id="userEmail">
+      </span>
+      <button class="logout-btn" onclick="logout()">
+       <i class="fas fa-sign-out-alt">
+       </i>
+       Logout
+      </button>
+     </div>
+    </div>
+    <!-- Stats Cards -->
+    <div class="stats-grid slide-up">
+     <div class="stat-card total">
+      <div class="icon">
+       <i class="fas fa-cubes">
+       </i>
+      </div>
+      <h3>
+       Total Items
+      </h3>
+      <div class="value" id="totalItems">
+       -
+      </div>
+     </div>
+     <div class="stat-card low-stock">
+      <div class="icon">
+       <i class="fas fa-exclamation-triangle">
+       </i>
+      </div>
+      <h3>
+       Low Stock
+      </h3>
+      <div class="value" id="lowStockItems">
+       -
+      </div>
+     </div>
+     <div class="stat-card in-stock">
+      <div class="icon">
+       <i class="fas fa-arrow-up">
+       </i>
+      </div>
+      <h3>
+       Stock In Today
+      </h3>
+      <div class="value" id="stockInToday">
+       -
+      </div>
+     </div>
+     <div class="stat-card out-stock">
+      <div class="icon">
+       <i class="fas fa-arrow-down">
+       </i>
+      </div>
+      <h3>
+       Stock Out Today
+      </h3>
+      <div class="value" id="stockOutToday">
+       -
+      </div>
+     </div>
+    </div>
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+     <button class="nav-tab active" onclick="switchTab('overview')">
+      <i class="fas fa-chart-bar">
+      </i>
+      Overview
+     </button>
+     <button class="nav-tab" onclick="switchTab('stock-management')">
+      <i class="fas fa-plus-circle">
+      </i>
+      Stock Management
+     </button>
+     <button class="nav-tab" onclick="switchTab('stock-in-history')">
+      <i class="fas fa-arrow-up">
+      </i>
+      Stock In History
+     </button>
+     <button class="nav-tab" onclick="switchTab('stock-out-history')">
+      <i class="fas fa-arrow-down">
+      </i>
+      Stock Out History
+     </button>
+     <button class="nav-tab" onclick="switchTab('reports')">
+      <i class="fas fa-file-alt">
+      </i>
+      Reports
+     </button>
+    </div>
+    <!-- Overview Tab -->
+    <div class="tab-content active" id="overview">
+     <div class="content-grid">
+      <!-- Current Stock -->
+      <div class="content-card slide-up">
+       <h2>
+        <i class="fas fa-warehouse">
+        </i>
+        Current Stock
+       </h2>
+       <!-- Search -->
+       <div class="search-container">
+        <div class="search-icon">
+         <i class="fas fa-search">
+         </i>
+        </div>
+        <input class="search-input" id="searchInput" onkeyup="searchItems()" placeholder="Search items..." type="text"/>
+       </div>
+       <!-- Current Stock Table -->
+       <div class="table-container">
+        <table>
+         <thead>
+          <tr>
+           <th>
+            Item Name
+           </th>
+           <th>
+            Quantity
+           </th>
+           <th>
+            Status
+           </th>
+           <th>
+            Last Updated
+           </th>
+           <th>
+            Actions
+           </th>
+          </tr>
+         </thead>
+         <tbody id="stockTableBody">
+          <!-- Dynamic content -->
+         </tbody>
+        </table>
+       </div>
+       <!-- Pagination -->
+       <div class="pagination" id="stockPagination">
+        <!-- Dynamic pagination -->
+       </div>
+      </div>
+      <!-- Charts -->
+      <div class="content-card slide-up">
+       <h2>
+        <i class="fas fa-chart-pie">
+        </i>
+        Stock Analysis
+       </h2>
+       <!-- Stock Distribution Chart -->
+       <div class="chart-container">
+        <canvas id="stockChart">
+        </canvas>
+       </div>
+       <!-- Recent Transactions Chart -->
+       <h2 style="margin-top: 30px;">
+        <i class="fas fa-chart-line">
+        </i>
+        Recent Activity
+       </h2>
+       <div class="chart-container">
+        <canvas id="activityChart">
+        </canvas>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- Stock Management Tab -->
+    <div class="tab-content" id="stock-management">
+     <div class="content-card slide-up">
+      <h2>
+       <i class="fas fa-plus-circle">
+       </i>
+       Stock Management
+      </h2>
+      <!-- Stock Form -->
+      <div class="stock-form">
+       <div class="form-group">
+        <label for="itemName">
+         Item Name
+        </label>
+        <input id="itemName" list="itemsList" placeholder="Enter item name" required="" type="text"/>
+        <datalist id="itemsList">
+        </datalist>
+       </div>
+       <div class="form-group">
+        <label for="quantity">
+         Quantity
+        </label>
+        <input id="quantity" min="0.01" placeholder="Enter quantity" required="" step="0.01" type="number"/>
+       </div>
+       <div class="btn-group">
+        <button class="btn btn-success" onclick="stockIn()" type="button">
+         <i class="fas fa-plus">
+         </i>
+         Stock In
+        </button>
+        <button class="btn btn-danger" onclick="stockOut()" type="button">
+         <i class="fas fa-minus">
+         </i>
+         Stock Out
+        </button>
+       </div>
+      </div>
+      <!-- Quick Actions -->
+      <div style="margin-bottom: 20px;">
+       <h3>
+        Quick Actions
+       </h3>
+       <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+        <button class="btn btn-info btn-sm" onclick="clearForm()">
+         <i class="fas fa-eraser">
+         </i>
+         Clear Form
+        </button>
+        <button class="btn btn-warning btn-sm" onclick="exportData('stock')">
+         <i class="fas fa-download">
+         </i>
+         Export Current Stock
+        </button>
+        <button class="btn btn-sm" onclick="refreshData()">
+         <i class="fas fa-sync-alt">
+         </i>
+         Refresh Data
+        </button>
+       </div>
+      </div>
+      <!-- Recent Transactions -->
+      <h3>
+       Recent Transactions
+      </h3>
+      <div class="table-container">
+       <table>
+        <thead>
+         <tr>
+          <th>
+           Type
+          </th>
+          <th>
+           Item
+          </th>
+          <th>
+           Quantity
+          </th>
+          <th>
+           User
+          </th>
+          <th>
+           Date
+          </th>
+         </tr>
+        </thead>
+        <tbody id="recentTransactionsBody">
+         <!-- Dynamic content -->
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+    <!-- Stock In History Tab -->
+    <div class="tab-content" id="stock-in-history">
+     <div class="content-card slide-up">
+      <h2>
+       <i class="fas fa-arrow-up">
+       </i>
+       Stock In History
+      </h2>
+      <div style="margin-bottom: 20px;">
+       <button class="btn btn-warning btn-sm" onclick="exportData('stock-in')">
+        <i class="fas fa-download">
+        </i>
+        Export Stock In Data
+       </button>
+      </div>
+      <div class="table-container">
+       <table>
+        <thead>
+         <tr>
+          <th>
+           ID
+          </th>
+          <th>
+           Item
+          </th>
+          <th>
+           Quantity
+          </th>
+          <th>
+           User
+          </th>
+          <th>
+           Date
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody id="stockInTableBody">
+         <!-- Dynamic content -->
+        </tbody>
+       </table>
+      </div>
+      <div class="pagination" id="stockInPagination">
+       <!-- Dynamic pagination -->
+      </div>
+     </div>
+    </div>
+    <!-- Stock Out History Tab -->
+    <div class="tab-content" id="stock-out-history">
+     <div class="content-card slide-up">
+      <h2>
+       <i class="fas fa-arrow-down">
+       </i>
+       Stock Out History
+      </h2>
+      <div style="margin-bottom: 20px;">
+       <button class="btn btn-warning btn-sm" onclick="exportData('stock-out')">
+        <i class="fas fa-download">
+        </i>
+        Export Stock Out Data
+       </button>
+      </div>
+      <div class="table-container">
+       <table>
+        <thead>
+         <tr>
+          <th>
+           ID
+          </th>
+          <th>
+           Item
+          </th>
+          <th>
+           Quantity
+          </th>
+          <th>
+           User
+          </th>
+          <th>
+           Date
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody id="stockOutTableBody">
+         <!-- Dynamic content -->
+        </tbody>
+       </table>
+      </div>
+      <div class="pagination" id="stockOutPagination">
+       <!-- Dynamic pagination -->
+      </div>
+     </div>
+    </div>
+    <!-- Reports Tab -->
+    <div class="tab-content" id="reports">
+     <div class="content-grid">
+      <div class="content-card slide-up">
+       <h2>
+        <i class="fas fa-chart-area">
+        </i>
+        Stock Movement Report
+       </h2>
+       <div class="chart-container">
+        <canvas id="movementChart">
+        </canvas>
+       </div>
+      </div>
+      <div class="content-card slide-up">
+       <h2>
+        <i class="fas fa-chart-bar">
+        </i>
+        Top Items
+       </h2>
+       <div class="chart-container">
+        <canvas id="topItemsChart">
+        </canvas>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Edit Stock Modal -->
+  <div class="modal" id="editStockModal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <h3 id="editModalTitle">
+      Edit Stock Record
+     </h3>
+     <button class="close-btn" onclick="closeEditModal()" type="button">
+      <i class="fas fa-times">
+      </i>
+     </button>
+    </div>
+    <form id="editStockForm">
+     <input id="editStockId" type="hidden"/>
+     <input id="editStockType" type="hidden"/>
+     <div class="form-group">
+      <label for="editItemName">
+       Item Name
+      </label>
+      <input id="editItemName" readonly="" required="" type="text"/>
+     </div>
+     <div class="form-group">
+      <label for="editQuantity">
+       Quantity
+      </label>
+      <input id="editQuantity" min="0.01" required="" step="0.01" type="number"/>
+     </div>
+     <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+      <button class="btn btn-secondary" onclick="closeEditModal()" type="button">
+       Cancel
+      </button>
+      <button class="btn btn-success" type="submit">
+       <i class="fas fa-save">
+       </i>
+       Save Changes
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <!-- Confirmation Modal -->
+  <div class="modal" id="confirmModal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <h3>
+      Confirm Action
+     </h3>
+     <button class="close-btn" onclick="closeConfirmModal()" type="button">
+      <i class="fas fa-times">
+      </i>
+     </button>
+    </div>
+    <div id="confirmMessage" style="margin: 20px 0;">
+    </div>
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+     <button class="btn btn-secondary" onclick="closeConfirmModal()" type="button">
+      Cancel
+     </button>
+     <button class="btn btn-danger" id="confirmButton" type="button">
+      Confirm
+     </button>
+    </div>
+   </div>
+  </div>
+  <!-- Notification -->
+  <div class="notification" id="notification">
+  </div>
+ </body>
+</html>
