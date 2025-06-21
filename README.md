@@ -56,18 +56,18 @@ The **SIJD Inventory Management UI** is designed to manage stock-in/out, view re
     └── utils.js
 ```
 Frontend Development Team
-      Kavindu Silva - Frontend Developer & Project Manager 
-          GitHub: @KavinduSilva2000
-          Role: Developer 
-          Frontend Responsibilities:HTML Structure(Index),CSS,auth_and_session JavaScript
-      Shanmugam Janani - Frontend Developer & DevOps 
-          GitHub: @
-          Role: Developer
-          Frontend Responsibilities:charts_and_reports JavaScript,config_and_state JavaScript,dashboard_logic JavaScript
-      Pawan Banuka - Frontend Developer & Reviewer 
-          GitHub: @pawanBperera
-          Role: Developer 
-          Frontend Responsibilities:modals_and_ui,stock_management JavaScript,utils JavaScript
+     - Kavindu Silva - Frontend Developer & Project Manager 
+          -GitHub: @KavinduSilva2000
+          -Role: Developer 
+          -Frontend Responsibilities:HTML Structure(Index),CSS,auth_and_session JavaScript
+      -Shanmugam Janani - Frontend Developer & DevOps 
+          -GitHub: @
+          -Role: Developer
+          -Frontend Responsibilities:charts_and_reports JavaScript,config_and_state JavaScript,dashboard_logic JavaScript
+      -Pawan Banuka - Frontend Developer & Reviewer 
+          -GitHub: @pawanBperera
+          -Role: Developer 
+          -Frontend Responsibilities:modals_and_ui,stock_management JavaScript,utils JavaScript
 
 
 ## ⚙️ Setup & Usage
